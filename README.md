@@ -4,6 +4,9 @@ A university startup prototype that helps older adults recognize scam **calls**,
 
 > **Important:** This is a demo. It uses a *simulated, pattern-based engine* (a transparent list of rules with fixed points). It is **not** real AI verification, it does **not** monitor phone calls, it **never opens** the links you check, and it **cannot guarantee** that anything is safe.
 
+**Live demo:** https://der3-scam-checker.vercel.app (static; every check runs in your browser, so nothing you type or upload is sent anywhere)
+**Code:** https://github.com/you798/der3-scam-checker
+
 ---
 
 ## What you need
@@ -287,6 +290,7 @@ The hosted site is **static**: Vercel serves only the `public/` folder.
 - **The build:** `npm run build` (`scripts/build-static.js`) copies the OCR library, its WebAssembly core and the Arabic/English language data from `node_modules` into `public/vendor/`. Vercel runs it automatically, and the folder is not committed.
 - **Vercel settings:** `vercel.json` sets the build command, the output folder (`public`) and the security headers. `.vercelignore` keeps `server.js` out of the upload, so it can never become a server function.
 - **Automatic updates:** after you connect the GitHub repository to Vercel once, every `git push` redeploys the site.
+- **Vercel project setting:** the Application Preset must be **Other**, not Express. Vercel may suggest Express because it sees `server.js`; `vercel.json` sets `"framework": null` as well.
 
 To check the static build locally: `npm run build`, then serve the `public` folder with any static file server.
 
