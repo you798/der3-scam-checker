@@ -1,0 +1,778 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Der3 | درع — Check calls, messages, and links for scams</title>
+  <meta name="description" content="Der3 | درع helps older adults recognize scam calls, messages, and links, in Arabic and English. University demo using simulated, rule-based analysis.">
+  <meta name="theme-color" content="#070E1A">
+  <meta name="color-scheme" content="dark">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230B1628'/%3E%3Cpath d='M16 6 9 8.6v6.3c0 4.7 3 8.4 7 10 4-1.6 7-5.3 7-10V8.6L16 6z' fill='none' stroke='%232DD4BF' stroke-width='1.8' stroke-linejoin='round'/%3E%3Cpath d='m12.8 15.6 2.3 2.3 4.1-4.5' fill='none' stroke='%23E8F1FB' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main" data-i18n="skip">Skip to main content</a>
+
+  <header class="site-header" id="top">
+    <div class="container header-inner">
+      <a href="#top" class="brand" aria-label="Der3 | درع">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+          <rect width="32" height="32" rx="8" fill="#0F1E36"/>
+          <path d="M16 6 9 8.6v6.3c0 4.7 3 8.4 7 10 4-1.6 7-5.3 7-10V8.6L16 6z" fill="none" stroke="#2DD4BF" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="m12.8 15.6 2.3 2.3 4.1-4.5" fill="none" stroke="#E8F1FB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="brand-name"><span lang="en">Der3</span><span class="brand-sep" aria-hidden="true"></span><span lang="ar">درع</span></span>
+      </a>
+
+      <nav class="site-nav" id="siteNav" data-i18n-aria-label="navLabel" aria-label="Main">
+        <ul>
+          <li><a href="#caller" data-i18n="navCaller">Caller number</a></li>
+          <li><a href="#checker" data-i18n="navCheck">Checker</a></li>
+          <li><a href="#history" data-i18n="navHistory">Recent checks</a></li>
+          <li><a href="#analysis" data-i18n="navAnalysis">How it analyzes</a></li>
+          <li><a href="#safety" data-i18n="navSafety">Safety center</a></li>
+          <li><a href="#trust" data-i18n="navTrust">Trust circle</a></li>
+          <li><a href="#evaluation" data-i18n="navEval">Evaluation</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <button class="btn btn-ghost btn-sm" data-open-help>
+          <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.4 3.2-5.5 6.5-5.5s5.9 2.1 6.5 5.5M17 7v6M14 10h6"/></svg>
+          <span class="hide-sm" data-i18n="askHelp">Ask for help</span>
+        </button>
+
+        <!-- Overflow menu: language + text size -->
+        <div class="more" id="more">
+          <button type="button" class="icon-btn" id="moreBtn" aria-haspopup="menu" aria-expanded="false" aria-controls="moreMenu" data-i18n-aria-label="moreLabel" aria-label="Settings: language and text size">
+            <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.6" fill="currentColor" stroke="none"/></svg>
+          </button>
+          <div class="menu" id="moreMenu" role="menu" aria-labelledby="moreBtn" hidden>
+            <div role="group" aria-labelledby="menuLangLabel">
+              <p class="menu-label" id="menuLangLabel" data-i18n="menuLanguage">Language</p>
+              <button type="button" role="menuitemradio" class="menu-item" data-lang="en" lang="en" aria-checked="true" tabindex="-1"><span class="check" aria-hidden="true"></span>English</button>
+              <button type="button" role="menuitemradio" class="menu-item" data-lang="ar" lang="ar" aria-checked="false" tabindex="-1"><span class="check" aria-hidden="true"></span>العربية</button>
+            </div>
+            <div class="menu-sep" role="separator"></div>
+            <div role="group" aria-labelledby="menuSizeLabel">
+              <p class="menu-label" id="menuSizeLabel" data-i18n="menuTextSize">Text size</p>
+              <button type="button" role="menuitemradio" class="menu-item" data-size="normal" aria-checked="true" tabindex="-1"><span class="check" aria-hidden="true"></span><span data-i18n="sizeNormal">Standard</span></button>
+              <button type="button" role="menuitemradio" class="menu-item" data-size="large" aria-checked="false" tabindex="-1"><span class="check" aria-hidden="true"></span><span data-i18n="sizeLarge">Large</span></button>
+            </div>
+          </div>
+        </div>
+
+        <button class="icon-btn menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="siteNav" data-i18n-aria-label="menu" aria-label="Menu">
+          <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="badge"><span class="badge-dot" aria-hidden="true"></span><span data-i18n="demoBadge">University demo · Simulated rule-based analysis</span></p>
+          <h1 data-i18n="heroTitle">Check a call, message, or link before you act.</h1>
+          <p class="lead" data-i18n="heroLead"></p>
+          <button type="button" class="btn btn-oncall btn-lg" data-open-oncall>
+            <span class="oncall-pulse" aria-hidden="true"></span>
+            <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/><path d="M15 3a6 6 0 0 1 6 6M15 7a2 2 0 0 1 2 2"/></svg>
+            <span data-i18n="ocOpen">I’m on a call right now</span>
+          </button>
+          <div class="hero-ctas">
+            <a class="btn btn-primary btn-lg" href="#checker">
+              <span data-i18n="heroCta">Start a check</span>
+              <svg class="icon flip" aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+            <a class="btn btn-ghost btn-lg" href="#caller">
+              <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>
+              <span data-i18n="heroCtaCaller">Check a caller number</span>
+            </a>
+          </div>
+          <ul class="points">
+            <li><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1M4 4l16 16"/></svg><span data-i18n="heroPoint1"></span></li>
+            <li><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span data-i18n="heroPoint2"></span></li>
+            <li><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M8 20h8M12 16v4"/></svg><span data-i18n="heroPoint3"></span></li>
+          </ul>
+        </div>
+
+        <!-- Technology illustration: shield, signal scan, connected nodes, risk meter -->
+        <div class="hero-visual">
+          <svg class="viz" viewBox="0 0 480 420" role="img" data-i18n-aria-label="visualLabel" aria-label="Illustration: a shield scanning signals, with a risk meter">
+            <defs>
+              <radialGradient id="vzGlow" cx="50%" cy="50%" r="50%">
+                <stop offset="0" stop-color="#2DD4BF" stop-opacity=".22"/>
+                <stop offset="1" stop-color="#2DD4BF" stop-opacity="0"/>
+              </radialGradient>
+              <linearGradient id="vzStroke" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#2DD4BF"/>
+                <stop offset="1" stop-color="#4C9EFF"/>
+              </linearGradient>
+              <linearGradient id="vzGauge" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" stop-color="#3DD68C"/>
+                <stop offset=".5" stop-color="#F5B544"/>
+                <stop offset="1" stop-color="#FF6B6B"/>
+              </linearGradient>
+              <clipPath id="vzShieldClip"><path d="M240 118 304 141v58c0 47-27 81-64 96-37-15-64-49-64-96v-58z"/></clipPath>
+              <pattern id="vzGrid" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="#2A3D5C"/></pattern>
+            </defs>
+
+            <rect x="0" y="0" width="480" height="420" fill="url(#vzGrid)" opacity=".55"/>
+            <circle cx="240" cy="206" r="190" fill="url(#vzGlow)"/>
+
+            <!-- network -->
+            <g class="viz-net" stroke="#2A4468" stroke-width="1.2">
+              <line x1="240" y1="206" x2="78" y2="110"/>
+              <line x1="240" y1="206" x2="96" y2="292"/>
+              <line x1="240" y1="206" x2="402" y2="96"/>
+              <line x1="240" y1="206" x2="420" y2="226"/>
+              <line x1="78" y1="110" x2="150" y2="58"/>
+              <line x1="402" y1="96" x2="338" y2="46"/>
+              <line x1="96" y1="292" x2="60" y2="210"/>
+            </g>
+            <g class="viz-nodes">
+              <circle cx="78" cy="110" r="7" fill="#0B1628" stroke="#4C9EFF" stroke-width="2"/>
+              <circle cx="150" cy="58" r="5" fill="#0B1628" stroke="#4C9EFF" stroke-width="1.6"/>
+              <circle cx="60" cy="210" r="5" fill="#0B1628" stroke="#2DD4BF" stroke-width="1.6"/>
+              <circle cx="96" cy="292" r="7" fill="#0B1628" stroke="#2DD4BF" stroke-width="2"/>
+              <circle cx="338" cy="46" r="5" fill="#0B1628" stroke="#4C9EFF" stroke-width="1.6"/>
+              <circle class="viz-flag" cx="402" cy="96" r="8" fill="#2A1218" stroke="#FF6B6B" stroke-width="2"/>
+              <circle cx="420" cy="226" r="6" fill="#0B1628" stroke="#2DD4BF" stroke-width="1.8"/>
+            </g>
+
+            <!-- scan rings -->
+            <circle cx="240" cy="206" r="122" fill="none" stroke="#1E3354" stroke-width="1"/>
+            <circle class="viz-ring" cx="240" cy="206" r="146" fill="none" stroke="url(#vzStroke)" stroke-width="1.4" stroke-dasharray="4 10" opacity=".7"/>
+
+            <!-- shield -->
+            <path d="M240 118 304 141v58c0 47-27 81-64 96-37-15-64-49-64-96v-58z" fill="#0D1B31" stroke="url(#vzStroke)" stroke-width="2.4" stroke-linejoin="round"/>
+            <g clip-path="url(#vzShieldClip)">
+              <rect class="viz-scan" x="170" y="118" width="140" height="26" fill="#2DD4BF" opacity=".14"/>
+              <g stroke="#1C3254" stroke-width="1"><line x1="176" y1="170" x2="304" y2="170"/><line x1="176" y1="200" x2="304" y2="200"/><line x1="176" y1="230" x2="304" y2="230"/><line x1="176" y1="260" x2="304" y2="260"/></g>
+            </g>
+            <path d="m216 204 17 17 32-36" fill="none" stroke="#E8F1FB" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+
+            <!-- signal scan card -->
+            <g class="viz-card">
+              <rect x="22" y="330" width="176" height="66" rx="10" fill="#0D1A2E" stroke="#22395C"/>
+              <text x="38" y="354" class="viz-label" data-i18n="vizScan">Signal scan</text>
+              <rect x="38" y="366" width="88" height="6" rx="3" fill="#FF6B6B"/>
+              <rect x="38" y="378" width="56" height="6" rx="3" fill="#F5B544"/>
+              <rect x="132" y="366" width="50" height="6" rx="3" fill="#22395C"/>
+              <rect x="100" y="378" width="82" height="6" rx="3" fill="#22395C"/>
+            </g>
+
+            <!-- risk meter card -->
+            <g class="viz-card">
+              <rect x="302" y="306" width="158" height="94" rx="10" fill="#0D1A2E" stroke="#22395C"/>
+              <text x="318" y="330" class="viz-label" data-i18n="vizRisk">Risk</text>
+              <path d="M330 384a51 51 0 0 1 102 0" fill="none" stroke="#1C3254" stroke-width="9" stroke-linecap="round"/>
+              <path d="M330 384a51 51 0 0 1 102 0" fill="none" stroke="url(#vzGauge)" stroke-width="9" stroke-linecap="round" stroke-dasharray="160" stroke-dashoffset="22"/>
+              <line class="viz-needle" x1="381" y1="384" x2="418" y2="360" stroke="#E8F1FB" stroke-width="3" stroke-linecap="round"/>
+              <circle cx="381" cy="384" r="5" fill="#E8F1FB"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHECKER -->
+    <section class="section" id="checker" aria-labelledby="checkTitle">
+      <div class="container">
+        <div class="section-head">
+          <p class="kicker" data-i18n="checkEyebrow">Checker</p>
+          <h2 id="checkTitle" data-i18n="checkTitle">Run a check</h2>
+          <p class="section-lead" data-i18n="checkLead"></p>
+        </div>
+
+        <!-- Caller number check (user-initiated, offline demo list) -->
+        <section class="panel caller" id="caller" aria-labelledby="callerTitle">
+          <div class="caller-grid">
+            <div class="caller-intro">
+              <span class="caller-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/><path d="M15 3a6 6 0 0 1 6 6M15 7a2 2 0 0 1 2 2"/></svg>
+              </span>
+              <div>
+                <h3 id="callerTitle" class="card-title" data-i18n="callerTitle">Check caller number</h3>
+                <p class="card-sub" data-i18n="callerLead"></p>
+              </div>
+            </div>
+            <form class="caller-form" id="callerForm" novalidate>
+              <label for="callerInput" data-i18n="callerLabel">Number shown on your phone</label>
+              <div class="caller-row">
+                <input type="text" id="callerInput" dir="ltr" inputmode="tel" autocomplete="off" maxlength="40" data-i18n-placeholder="callerPlaceholder" aria-describedby="callerHint">
+                <button type="submit" class="btn btn-primary" id="callerBtn"><span data-i18n="callerBtn">Check number</span></button>
+              </div>
+              <p class="note note-muted" id="callerHint" data-i18n="callerHint"></p>
+            </form>
+          </div>
+          <div class="oncall-strip">
+            <p data-i18n="ocStrip">Still on the line with someone you’re unsure about?</p>
+            <button type="button" class="btn btn-oncall" data-open-oncall>
+              <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>
+              <span data-i18n="ocOpen">I’m on a call right now</span>
+            </button>
+          </div>
+          <div id="callerResult" aria-live="polite"></div>
+          <details class="limits">
+            <summary data-i18n="limitsTitle">Why can’t Der3 screen my calls automatically?</summary>
+            <p data-i18n="limitsBody"></p>
+          </details>
+        </section>
+
+        <div class="console panel">
+          <div class="console-bar">
+            <span class="console-title">
+              <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3 4.5 6v6c0 4.6 3.2 7.9 7.5 9 4.3-1.1 7.5-4.4 7.5-9V6L12 3z"/></svg>
+              <span data-i18n="consoleTitle">Der3 Checker</span>
+            </span>
+            <p class="server-status" id="serverStatus" role="status"><span class="dot" aria-hidden="true"></span><span id="serverStatusText"></span></p>
+          </div>
+
+          <div class="tabs" role="tablist" data-i18n-aria-label="tabsLabel" aria-label="Type of thing to check">
+            <button class="tab" role="tab" id="tab-call" aria-controls="panel-call" aria-selected="true" data-tab="call">
+              <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>
+              <span data-i18n="tabCall">Call</span>
+            </button>
+            <button class="tab" role="tab" id="tab-message" aria-controls="panel-message" aria-selected="false" tabindex="-1" data-tab="message">
+              <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4V5z"/></svg>
+              <span data-i18n="tabMessage">Message</span>
+            </button>
+            <button class="tab" role="tab" id="tab-link" aria-controls="panel-link" aria-selected="false" tabindex="-1" data-tab="link">
+              <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>
+              <span data-i18n="tabLink">Link</span>
+            </button>
+            <button class="tab" role="tab" id="tab-screenshot" aria-controls="panel-screenshot" aria-selected="false" tabindex="-1" data-tab="screenshot">
+              <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m21 16-5-5-8 8"/></svg>
+              <span data-i18n="tabShot">Screenshot</span>
+            </button>
+          </div>
+
+          <div class="console-body">
+            <div class="console-input">
+              <!-- CALL -->
+              <form class="tab-panel" role="tabpanel" id="panel-call" aria-labelledby="tab-call" data-type="call" novalidate>
+                <div class="field">
+                  <label for="input-call" data-i18n="callLabel">What did the caller say?</label>
+                  <textarea id="input-call" rows="6" dir="auto" maxlength="5000" data-i18n-placeholder="callPlaceholder" aria-describedby="count-call"></textarea>
+                  <span class="count" id="count-call"></span>
+                </div>
+                <div class="input-options">
+                  <div class="option-row">
+                    <label class="btn btn-ghost btn-sm file-btn">
+                      <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M5 15v4h14v-4"/></svg>
+                      <span data-i18n="callAudioBtn">Upload recording</span>
+                      <input type="file" id="audioInput" accept="audio/*" class="visually-hidden">
+                    </label>
+                    <button type="button" class="btn btn-ghost btn-sm" id="micBtn" aria-pressed="false">
+                      <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+                      <span id="micBtnText" data-i18n="micStart">Dictate</span>
+                      <span class="rec-dot" id="recDot" hidden aria-hidden="true"></span>
+                    </button>
+                    <button type="button" class="btn btn-text btn-sm" id="audioRemove" hidden data-i18n="callAudioRemove">Remove recording</button>
+                  </div>
+                  <audio id="audioPlayer" controls hidden></audio>
+                  <p class="note" id="audioStatus" aria-live="polite"></p>
+                  <p class="note" id="micStatus" aria-live="polite"></p>
+                  <p class="note note-muted" id="micLimits" data-i18n="micLimits"></p>
+                </div>
+                <div class="samples">
+                  <span class="samples-label" data-i18n="samplesLabel">Examples</span>
+                  <div class="samples-list" data-samples="call"></div>
+                </div>
+                <div class="form-foot">
+                  <p class="privacy"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span data-i18n="privacyNote"></span></p>
+                  <div class="actions">
+                    <button type="button" class="btn btn-text clear-btn" data-i18n="clearBtn">Clear</button>
+                    <button type="submit" class="btn btn-primary analyze-btn"><span data-i18n="analyzeBtn">Check</span></button>
+                  </div>
+                </div>
+              </form>
+
+              <!-- MESSAGE -->
+              <form class="tab-panel" role="tabpanel" id="panel-message" aria-labelledby="tab-message" data-type="message" hidden novalidate>
+                <div class="field">
+                  <label for="input-message" data-i18n="msgLabel">Paste the message</label>
+                  <textarea id="input-message" rows="8" dir="auto" maxlength="5000" data-i18n-placeholder="msgPlaceholder" aria-describedby="count-message"></textarea>
+                  <span class="count" id="count-message"></span>
+                </div>
+                <div class="samples">
+                  <span class="samples-label" data-i18n="samplesLabel">Examples</span>
+                  <div class="samples-list" data-samples="message"></div>
+                </div>
+                <div class="form-foot">
+                  <p class="privacy"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span data-i18n="privacyNote"></span></p>
+                  <div class="actions">
+                    <button type="button" class="btn btn-text clear-btn" data-i18n="clearBtn">Clear</button>
+                    <button type="submit" class="btn btn-primary analyze-btn"><span data-i18n="analyzeBtn">Check</span></button>
+                  </div>
+                </div>
+              </form>
+
+              <!-- LINK -->
+              <form class="tab-panel" role="tabpanel" id="panel-link" aria-labelledby="tab-link" data-type="link" hidden novalidate>
+                <div class="field">
+                  <label for="input-link" data-i18n="linkLabel">Paste the web address</label>
+                  <input type="text" id="input-link" dir="ltr" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="2000" data-i18n-placeholder="linkPlaceholder" aria-describedby="link-hint">
+                  <p class="note" id="link-hint" data-i18n="linkHint"></p>
+                </div>
+                <div class="samples">
+                  <span class="samples-label" data-i18n="samplesLabel">Examples</span>
+                  <div class="samples-list" data-samples="link"></div>
+                </div>
+                <div class="form-foot">
+                  <p class="privacy"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span data-i18n="privacyNote"></span></p>
+                  <div class="actions">
+                    <button type="button" class="btn btn-text clear-btn" data-i18n="clearBtn">Clear</button>
+                    <button type="submit" class="btn btn-primary analyze-btn"><span data-i18n="analyzeBtn">Check</span></button>
+                  </div>
+                </div>
+              </form>
+
+              <!-- SCREENSHOT: local OCR in the browser; the image is never uploaded -->
+              <form class="tab-panel shot" role="tabpanel" id="panel-screenshot" aria-labelledby="tab-screenshot" data-type="screenshot" hidden novalidate>
+                <p class="shot-intro" data-i18n="shotIntro"></p>
+
+                <div class="shot-step" id="shotPick">
+                  <h3 class="shot-step-title"><span class="shot-num" aria-hidden="true">1</span><span data-i18n="shotStep1">Choose a screenshot</span></h3>
+                  <div class="shot-pick-row">
+                    <label class="btn btn-primary btn-lg file-btn shot-file">
+                      <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m21 16-5-5-8 8"/></svg>
+                      <span id="shotPickLabel" data-i18n="shotPickBtn">Choose screenshot</span>
+                      <input type="file" id="shotInput" accept="image/png,image/jpeg,image/webp,image/bmp,image/gif" class="visually-hidden" aria-describedby="shotPickHint">
+                    </label>
+                  </div>
+                  <p class="note note-muted" id="shotPickHint" data-i18n="shotPickHint"></p>
+                  <p class="note is-error" id="shotFileError" role="alert"></p>
+                </div>
+
+                <figure class="shot-preview" id="shotPreviewWrap" hidden>
+                  <img id="shotPreview" alt="">
+                  <figcaption>
+                    <bdi id="shotName"></bdi>
+                    <button type="button" class="btn btn-text btn-sm" id="shotRemove" data-i18n="shotRemove">Remove screenshot</button>
+                  </figcaption>
+                </figure>
+
+                <div class="shot-progress" id="shotProgress" hidden>
+                  <div class="shot-bar" role="progressbar" id="shotBar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-i18n-aria-label="shotReading" aria-label="Reading text"><span></span></div>
+                  <p class="shot-status" id="shotStatus" role="status" aria-live="polite"></p>
+                  <button type="button" class="btn btn-ghost btn-sm" id="shotCancel" data-i18n="shotCancel">Stop reading</button>
+                </div>
+
+                <div class="shot-step" id="shotReview" hidden>
+                  <h3 class="shot-step-title" id="shotReviewTitle" tabindex="-1"><span class="shot-num" aria-hidden="true">2</span><span data-i18n="shotStep2">Check the text</span></h3>
+                  <div class="shot-unclear" id="shotUnclear" role="alert" hidden>
+                    <p class="shot-unclear-title" data-i18n="shotUnclearTitle">Couldn’t read this clearly</p>
+                    <p id="shotUnclearText"></p>
+                  </div>
+                  <p class="shot-quality" id="shotQuality"></p>
+                  <div class="field">
+                    <label for="input-screenshot" data-i18n="shotTextLabel">Text found in the screenshot — correct anything that’s wrong</label>
+                    <textarea id="input-screenshot" rows="8" dir="auto" maxlength="5000" aria-describedby="shotTextHint count-screenshot"></textarea>
+                    <span class="count" id="count-screenshot"></span>
+                    <p class="note note-muted" id="shotTextHint" data-i18n="shotTextHint"></p>
+                  </div>
+                  <div class="form-foot">
+                    <p class="privacy"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span data-i18n="shotPrivacy"></span></p>
+                    <div class="actions">
+                      <button type="button" class="btn btn-text" id="shotStartOver" data-i18n="shotStartOver">Start over</button>
+                      <button type="submit" class="btn btn-primary analyze-btn" data-label="shotConfirmBtn"><span data-i18n="shotConfirmBtn">Text is correct — check it</span></button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            <div class="console-result" id="resultCard">
+              <div id="resultLive" class="visually-hidden" role="status" aria-live="polite"></div>
+              <div id="resultBody"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dashboard row: recent checks + analysis explainer -->
+        <div class="dash-grid">
+          <section class="panel dash-card" id="history" aria-labelledby="historyTitle">
+            <div class="card-head">
+              <div>
+                <h2 id="historyTitle" class="card-title" data-i18n="historyTitle">Recent checks</h2>
+                <p class="card-sub" data-i18n="historyLead"></p>
+              </div>
+              <button type="button" class="btn btn-ghost btn-sm" id="historyClear" data-i18n="historyClear">Clear history</button>
+            </div>
+            <div id="historyBody"></div>
+          </section>
+
+          <section class="panel dash-card" id="analysis" aria-labelledby="analysisTitle">
+            <div class="card-head">
+              <div>
+                <h2 id="analysisTitle" class="card-title" data-i18n="analysisTitle">How Der3 analyzes</h2>
+                <p class="card-sub" data-i18n="analysisLead"></p>
+              </div>
+            </div>
+            <ol class="pipeline">
+              <li><span class="pipe-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4V5z"/></svg></span><span data-i18n="pipe1">Your text</span></li>
+              <li><span class="pipe-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg></span><span data-i18n="pipe2">Signal scan</span></li>
+              <li><span class="pipe-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><span data-i18n="pipe3">Risk score</span></li>
+              <li><span class="pipe-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 4.5 6v6c0 4.6 3.2 7.9 7.5 9 4.3-1.1 7.5-4.4 7.5-9V6L12 3z"/><path d="m9 12 2 2 4-4"/></svg></span><span data-i18n="pipe4">Verdict</span></li>
+            </ol>
+            <div id="breakdown"></div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <!-- SAFETY CENTER -->
+    <section class="section section-alt" id="safety" aria-labelledby="safetyTitle">
+      <div class="container">
+        <div class="section-head">
+          <p class="kicker" data-i18n="safetyKicker">Safety center</p>
+          <h2 id="safetyTitle" data-i18n="safetyTitle">What to do next</h2>
+          <p class="section-lead" id="safetyLead"></p>
+        </div>
+
+        <ol class="core-grid">
+          <li class="panel core" id="core-1">
+            <span class="core-num" aria-hidden="true">01</span>
+            <span class="priority-tag" data-i18n="priority" hidden>Priority</span>
+            <h3 data-i18n="core1T"></h3>
+            <p data-i18n="core1D"></p>
+          </li>
+          <li class="panel core" id="core-2">
+            <span class="core-num" aria-hidden="true">02</span>
+            <span class="priority-tag" data-i18n="priority" hidden>Priority</span>
+            <h3 data-i18n="core2T"></h3>
+            <p data-i18n="core2D"></p>
+          </li>
+          <li class="panel core" id="core-3">
+            <span class="core-num" aria-hidden="true">03</span>
+            <span class="priority-tag" data-i18n="priority" hidden>Priority</span>
+            <h3 data-i18n="core3T"></h3>
+            <p data-i18n="core3D"></p>
+          </li>
+          <li class="panel core" id="core-4">
+            <span class="core-num" aria-hidden="true">04</span>
+            <span class="priority-tag" data-i18n="priority" hidden>Priority</span>
+            <h3 data-i18n="core4T"></h3>
+            <p data-i18n="core4D"></p>
+            <button type="button" class="btn btn-ghost btn-sm core-btn" data-open-help><span data-i18n="askHelp">Ask for help</span></button>
+          </li>
+        </ol>
+
+        <div class="panel adaptive">
+          <h3 class="card-title" data-i18n="adaptiveTitle">Advice for the signs we found</h3>
+          <div id="adaptiveBody"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRUST CIRCLE — contacts stay on this device only -->
+    <section class="section" id="trust" aria-labelledby="trustTitle">
+      <div class="container">
+        <div class="section-head">
+          <p class="kicker" data-i18n="trKicker">Trust circle</p>
+          <h2 id="trustTitle" data-i18n="trTitle">People you can call before you act</h2>
+          <p class="section-lead" data-i18n="trLead"></p>
+        </div>
+
+        <div class="trust-grid">
+          <div class="panel trust-form-card">
+            <h3 class="card-title" id="trFormTitle" tabindex="-1" data-i18n="trAddTitle">Add a trusted person</h3>
+            <form id="trustForm" class="trust-form" novalidate>
+              <div class="field">
+                <label for="trName" data-i18n="trNameLabel">Name</label>
+                <input type="text" id="trName" maxlength="40" autocomplete="off" dir="auto" aria-describedby="trNameErr">
+                <p class="note is-error" id="trNameErr"></p>
+              </div>
+              <div class="field">
+                <label for="trPhone" data-i18n="trPhoneLabel">Phone number</label>
+                <input type="tel" id="trPhone" dir="ltr" inputmode="tel" maxlength="24" autocomplete="off" aria-describedby="trPhoneHint trPhoneErr" placeholder="+20 100 123 4567">
+                <p class="note note-muted" id="trPhoneHint" data-i18n="trPhoneHint"></p>
+                <p class="note is-error" id="trPhoneErr"></p>
+              </div>
+              <div class="actions trust-form-actions">
+                <button type="button" class="btn btn-text" id="trCancel" hidden data-i18n="trCancelEdit">Cancel</button>
+                <button type="submit" class="btn btn-primary" id="trSave"><span data-i18n="trAddBtn">Add to trust circle</span></button>
+              </div>
+            </form>
+            <p class="privacy trust-privacy"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span data-i18n="trPrivacy"></span></p>
+          </div>
+
+          <div class="panel trust-list-card">
+            <h3 class="card-title" data-i18n="trListTitle">Your trust circle</h3>
+            <p class="visually-hidden" id="trLive" role="status" aria-live="polite"></p>
+            <div id="trustList"></div>
+            <p class="callout trust-spoof" data-i18n="trSpoof"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DEMO EVALUATION — numbers computed live from the analyzer's real outputs -->
+    <section class="section section-alt" id="evaluation" aria-labelledby="evalTitle">
+      <div class="container">
+        <div class="section-head">
+          <p class="kicker" data-i18n="evKicker">Demo evaluation</p>
+          <h2 id="evalTitle" data-i18n="evTitle">How the analyzer does on our demo examples</h2>
+          <p class="section-lead" data-i18n="evLead"></p>
+        </div>
+
+        <div class="eval-disclaimer" role="note">
+          <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.5"/></svg>
+          <p data-i18n="evDisclaimer"></p>
+        </div>
+
+        <div class="eval-toolbar">
+          <button type="button" class="btn btn-primary btn-lg" id="evRun">
+            <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M7 5l12 7-12 7z"/></svg>
+            <span data-i18n="evRun">Run evaluation</span>
+          </button>
+          <button type="button" class="btn btn-ghost" id="evAdd"><span data-i18n="evAdd">Add example</span></button>
+          <button type="button" class="btn btn-text" id="evReset" data-i18n="evReset">Restore original examples</button>
+        </div>
+        <p class="note" id="evStatus" role="status" aria-live="polite"></p>
+
+        <div id="evSummary" class="eval-summary"></div>
+
+        <div class="panel eval-table-card">
+          <div class="card-head">
+            <div>
+              <h3 class="card-title" id="evExamplesTitle" data-i18n="evExamplesTitle">Examples</h3>
+              <p class="card-sub" data-i18n="evExamplesSub"></p>
+            </div>
+          </div>
+          <div id="evList"></div>
+        </div>
+
+        <details class="eval-defs">
+          <summary data-i18n="evDefsTitle">How results are counted</summary>
+          <ul>
+            <li data-i18n="evDef1"></li>
+            <li data-i18n="evDef2"></li>
+            <li data-i18n="evDef3"></li>
+            <li data-i18n="evDef4"></li>
+            <li data-i18n="evDef5"></li>
+          </ul>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <div class="brand">
+          <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+            <rect width="32" height="32" rx="8" fill="#0F1E36"/>
+            <path d="M16 6 9 8.6v6.3c0 4.7 3 8.4 7 10 4-1.6 7-5.3 7-10V8.6L16 6z" fill="none" stroke="#2DD4BF" stroke-width="1.8" stroke-linejoin="round"/>
+            <path d="m12.8 15.6 2.3 2.3 4.1-4.5" fill="none" stroke="#E8F1FB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="brand-name"><span lang="en">Der3</span><span class="brand-sep" aria-hidden="true"></span><span lang="ar">درع</span></span>
+        </div>
+        <p class="footer-about" data-i18n="footerAbout"></p>
+      </div>
+      <nav data-i18n-aria-label="footerNav" aria-label="On this page">
+        <h2 class="footer-h" data-i18n="footerNav">On this page</h2>
+        <ul>
+          <li><a href="#caller" data-i18n="navCaller">Caller number</a></li>
+          <li><a href="#checker" data-i18n="navCheck">Checker</a></li>
+          <li><a href="#history" data-i18n="navHistory">Recent checks</a></li>
+          <li><a href="#analysis" data-i18n="navAnalysis">How it analyzes</a></li>
+          <li><a href="#safety" data-i18n="navSafety">Safety center</a></li>
+          <li><a href="#trust" data-i18n="navTrust">Trust circle</a></li>
+          <li><a href="#evaluation" data-i18n="navEval">Demo evaluation</a></li>
+        </ul>
+      </nav>
+      <div>
+        <h2 class="footer-h" data-i18n="footerNoticeTitle">Notice</h2>
+        <p data-i18n="footerDisclaimer"></p>
+        <p data-i18n="footerPrivacy"></p>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <p data-i18n="footerCopy"></p>
+      <a href="#top" data-i18n="backTop">Back to top</a>
+    </div>
+  </footer>
+
+  <!-- HELP DIALOG (demo only) -->
+  <dialog id="helpDialog" aria-labelledby="dlgTitle">
+    <div class="dlg-head">
+      <h2 id="dlgTitle" data-i18n="dlgTitle">Ask someone you trust</h2>
+      <button type="button" class="icon-btn" data-close-help data-i18n-aria-label="dlgClose" aria-label="Close">
+        <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+    <!-- Real emergency call (not part of the demo). tel: opens the phone's dialer;
+         the user still presses Call. Egypt police emergency (النجدة) = 122.
+         For another country, change the href and the number below. -->
+    <div class="emergency" role="region" aria-labelledby="emergencyTitle">
+      <div class="emergency-text">
+        <p class="emergency-title" id="emergencyTitle" data-i18n="emergencyTitle">Emergency</p>
+        <p data-i18n="emergencyText"></p>
+      </div>
+      <a class="btn btn-danger" id="emergencyCall" href="tel:122">
+        <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>
+        <span data-i18n="emergencyBtn">Call police emergency</span>
+        <bdi class="emergency-num" dir="ltr">122</bdi>
+      </a>
+      <p class="emergency-note" data-i18n="emergencyNote"></p>
+    </div>
+
+    <form id="helpForm" class="dlg-body" novalidate>
+      <p class="dlg-intro" data-i18n="dlgIntro"></p>
+      <fieldset class="who-group">
+        <legend data-i18n="dlgWho">Who would you like to ask?</legend>
+        <label class="who-option"><input type="radio" name="who" value="family" checked><span data-i18n="who_family">A family member</span></label>
+        <label class="who-option"><input type="radio" name="who" value="friend"><span data-i18n="who_friend">A friend</span></label>
+        <label class="who-option"><input type="radio" name="who" value="neighbour"><span data-i18n="who_neighbour">A neighbour or carer</span></label>
+      </fieldset>
+      <div class="field">
+        <label for="helpName" data-i18n="dlgName">Their first name (optional)</label>
+        <input type="text" id="helpName" maxlength="40" autocomplete="off" dir="auto" aria-describedby="helpNameHint">
+        <p class="note note-muted" id="helpNameHint" data-i18n="dlgNameHint"></p>
+      </div>
+      <p class="dlg-error" id="helpError" role="alert" hidden></p>
+      <div class="actions actions-end">
+        <button type="button" class="btn btn-text" data-close-help data-i18n="dlgCancel">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="helpSend"><span data-i18n="dlgSend">Prepare request (demo)</span></button>
+      </div>
+    </form>
+    <div id="helpDone" class="dlg-body" hidden>
+      <div class="done-row">
+        <span class="done-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg></span>
+        <h3 id="helpDoneTitle" tabindex="-1" data-i18n="dlgDoneTitle">Demo: help request ready</h3>
+      </div>
+      <p id="helpDoneText"></p>
+      <p class="note note-muted" id="helpRef"></p>
+      <p class="callout" data-i18n="dlgBankTip"></p>
+      <label for="copyNote" class="field-label" data-i18n="dlgNoteLabel">Note you can send</label>
+      <textarea id="copyNote" rows="4" dir="auto" readonly></textarea>
+      <p class="note" id="copyStatus" role="status"></p>
+      <div class="actions actions-end">
+        <button type="button" class="btn btn-ghost" id="copyBtn"><span data-i18n="dlgCopy">Copy note</span></button>
+        <button type="button" class="btn btn-primary" data-close-help data-i18n="dlgClose">Close</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- "I'M ON A CALL RIGHT NOW" — user-guided. The site cannot hear, detect, or end calls. -->
+  <dialog id="callDialog" class="oc-dialog" aria-labelledby="ocTitle" aria-describedby="ocLead">
+    <div class="dlg-head oc-head">
+      <div class="oc-head-title">
+        <span class="oc-badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 4.5 6v6c0 4.6 3.2 7.9 7.5 9 4.3-1.1 7.5-4.4 7.5-9V6L12 3z"/><path d="M12 8v5M12 16v.5"/></svg></span>
+        <h2 id="ocTitle" data-i18n="ocTitle">On a call right now</h2>
+      </div>
+      <div class="oc-head-actions">
+        <button type="button" class="btn btn-ghost btn-sm" id="ocLang"></button>
+        <button type="button" class="icon-btn" data-close-oncall data-i18n-aria-label="dlgClose" aria-label="Close">
+          <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="oc-body">
+      <p class="oc-lead" id="ocLead" data-i18n="ocLead"></p>
+      <p class="oc-limit"><svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.5"/></svg><span data-i18n="ocLimit"></span></p>
+
+      <form id="ocForm" class="oc-questions" novalidate>
+        <fieldset class="oc-q" data-q="sensitive">
+          <legend><span class="oc-q-num" aria-hidden="true">1</span><span data-i18n="ocQ1">Are they asking for a verification code, card details, password, or money?</span></legend>
+          <div class="oc-choices">
+            <label class="oc-choice yes"><input type="radio" name="oc-sensitive" value="yes"><span data-i18n="ocYes">Yes</span></label>
+            <label class="oc-choice no"><input type="radio" name="oc-sensitive" value="no"><span data-i18n="ocNo">No</span></label>
+            <label class="oc-choice unsure"><input type="radio" name="oc-sensitive" value="unsure"><span data-i18n="ocUnsure">Not sure</span></label>
+          </div>
+        </fieldset>
+        <fieldset class="oc-q" data-q="pressure">
+          <legend><span class="oc-q-num" aria-hidden="true">2</span><span data-i18n="ocQ2">Are they pressuring or frightening you to act quickly?</span></legend>
+          <div class="oc-choices">
+            <label class="oc-choice yes"><input type="radio" name="oc-pressure" value="yes"><span data-i18n="ocYes">Yes</span></label>
+            <label class="oc-choice no"><input type="radio" name="oc-pressure" value="no"><span data-i18n="ocNo">No</span></label>
+            <label class="oc-choice unsure"><input type="radio" name="oc-pressure" value="unsure"><span data-i18n="ocUnsure">Not sure</span></label>
+          </div>
+        </fieldset>
+        <fieldset class="oc-q" data-q="control">
+          <legend><span class="oc-q-num" aria-hidden="true">3</span><span data-i18n="ocQ3">Are they asking you to install an app, share your screen, or keep the call secret?</span></legend>
+          <div class="oc-choices">
+            <label class="oc-choice yes"><input type="radio" name="oc-control" value="yes"><span data-i18n="ocYes">Yes</span></label>
+            <label class="oc-choice no"><input type="radio" name="oc-control" value="no"><span data-i18n="ocNo">No</span></label>
+            <label class="oc-choice unsure"><input type="radio" name="oc-control" value="unsure"><span data-i18n="ocUnsure">Not sure</span></label>
+          </div>
+        </fieldset>
+      </form>
+
+      <div id="ocResult" class="oc-result" role="status" aria-live="polite"></div>
+      <!-- Read aloud + safety pause live OUTSIDE the live region so the countdown isn't re-announced. -->
+      <div id="ocTools" class="oc-tools"></div>
+      <p id="ocLive" class="visually-hidden" role="status" aria-live="polite"></p>
+
+      <section class="oc-script" aria-labelledby="ocScriptTitle">
+        <h3 id="ocScriptTitle" data-i18n="ocScriptTitle">Say this, then hang up</h3>
+        <blockquote class="oc-script-text" data-i18n="ocScript">I won’t share any codes. I’m ending this call and contacting the organization using its official number.</blockquote>
+      </section>
+
+      <div class="oc-actions">
+        <button type="button" class="btn btn-primary btn-lg" id="ocVerifyBtn" aria-expanded="false" aria-controls="ocVerify">
+          <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3 4.5 6v6c0 4.6 3.2 7.9 7.5 9 4.3-1.1 7.5-4.4 7.5-9V6L12 3z"/><path d="m9 12 2 2 4-4"/></svg>
+          <span data-i18n="ocVerifyBtn">Show me how to verify safely</span>
+        </button>
+        <button type="button" class="btn btn-ghost btn-lg" id="ocShareBtn" aria-expanded="false" aria-controls="ocShare">
+          <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.4 3.2-5.5 6.5-5.5s5.9 2.1 6.5 5.5M17 7v6M14 10h6"/></svg>
+          <span data-i18n="ocShareBtn">Share a privacy-safe summary with someone I trust</span>
+        </button>
+      </div>
+
+      <section id="ocVerify" class="oc-panel" aria-labelledby="ocVerifyTitle" hidden>
+        <h3 id="ocVerifyTitle" tabindex="-1" data-i18n="ocVerifyTitle">How to verify safely</h3>
+        <ol class="oc-steps">
+          <li data-i18n="ocStep1"></li>
+          <li data-i18n="ocStep2"></li>
+          <li data-i18n="ocStep3"></li>
+          <li data-i18n="ocStep4"></li>
+          <li data-i18n="ocStep5"></li>
+        </ol>
+        <p class="callout" data-i18n="ocVerifyTip"></p>
+      </section>
+
+      <section id="ocShare" class="oc-panel" aria-labelledby="ocShareTitle" hidden>
+        <h3 id="ocShareTitle" tabindex="-1" data-i18n="ocShareTitle">Your summary</h3>
+        <p class="note note-muted" data-i18n="ocShareNote"></p>
+        <label for="ocSummary" class="field-label" data-i18n="ocShareLabel">This is exactly what will be shared</label>
+        <textarea id="ocSummary" rows="7" dir="auto" readonly></textarea>
+        <p class="note" id="ocShareStatus" role="status"></p>
+        <div class="oc-share-row">
+          <button type="button" class="btn btn-primary" id="ocShareSend"><span data-i18n="ocShareSend">Share now</span></button>
+          <button type="button" class="btn btn-ghost" id="ocCopy"><span data-i18n="ocCopy">Copy summary</span></button>
+        </div>
+      </section>
+
+      <div class="oc-foot">
+        <button type="button" class="btn btn-text" id="ocReset" data-i18n="ocReset">Start over</button>
+        <button type="button" class="btn btn-ghost" data-close-oncall data-i18n="dlgClose">Close</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/verified-numbers.js"></script>
+  <script src="js/verified-orgs.js"></script>
+  <script src="js/number-check.js"></script>
+  <script src="js/samples.js"></script>
+  <script src="js/on-call.js"></script>
+  <script src="js/read-aloud.js"></script>
+  <script src="js/screenshot.js"></script>
+  <script src="js/trust.js"></script>
+  <script src="js/eval-set.js"></script>
+  <script src="js/evaluation.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

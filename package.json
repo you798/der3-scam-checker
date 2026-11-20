@@ -1,0 +1,22 @@
+{
+  "name": "der3-scam-checker",
+  "version": "1.0.0",
+  "description": "Der3 | درع — a university demo that helps older adults recognize scam calls, messages, and links. Uses a simulated, pattern-based engine that runs locally.",
+  "main": "server.js",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test test/"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@tesseract.js-data/ara": "1.0.0",
+    "@tesseract.js-data/eng": "1.0.0",
+    "express": "^4.21.2",
+    "tesseract.js": "7.0.0"
+  },
+  "license": "MIT"
+}
