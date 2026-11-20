@@ -8,9 +8,8 @@
   <meta name="theme-color" content="#070E1A">
   <meta name="color-scheme" content="dark">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230B1628'/%3E%3Cpath d='M16 6 9 8.6v6.3c0 4.7 3 8.4 7 10 4-1.6 7-5.3 7-10V8.6L16 6z' fill='none' stroke='%232DD4BF' stroke-width='1.8' stroke-linejoin='round'/%3E%3Cpath d='m12.8 15.6 2.3 2.3 4.1-4.5' fill='none' stroke='%23E8F1FB' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <!-- Fonts are served from this project (public/fonts) — no request to Google, works offline. -->
+  <link rel="stylesheet" href="fonts/fonts.css">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -40,9 +39,9 @@
       </nav>
 
       <div class="header-actions">
-        <button class="btn btn-ghost btn-sm" data-open-help>
+        <button class="btn btn-ghost btn-sm" data-open-help data-i18n-aria-label="askHelp" aria-label="Ask for help">
           <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.4 3.2-5.5 6.5-5.5s5.9 2.1 6.5 5.5M17 7v6M14 10h6"/></svg>
-          <span class="hide-sm" data-i18n="askHelp">Ask for help</span>
+          <span class="hide-sm" data-i18n="askHelp" aria-hidden="true">Ask for help</span>
         </button>
 
         <!-- Overflow menu: language + text size -->
@@ -529,6 +528,12 @@
           <p data-i18n="evDisclaimer"></p>
         </div>
 
+        <div class="eval-sets" role="group" data-i18n-aria-label="evSetLabel" aria-label="Which examples">
+          <button type="button" class="eval-set-btn" data-set="dev" aria-pressed="true"><span data-i18n="evSet_dev">Development set</span></button>
+          <button type="button" class="eval-set-btn" data-set="holdout" aria-pressed="false"><span data-i18n="evSet_holdout">Held-out set</span></button>
+        </div>
+        <p class="eval-set-note" id="evSetNote"></p>
+
         <div class="eval-toolbar">
           <button type="button" class="btn btn-primary btn-lg" id="evRun">
             <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M7 5l12 7-12 7z"/></svg>
@@ -772,6 +777,7 @@
   <script src="js/screenshot.js"></script>
   <script src="js/trust.js"></script>
   <script src="js/eval-set.js"></script>
+  <script src="js/eval-holdout.js"></script>
   <script src="js/evaluation.js"></script>
   <script src="js/app.js"></script>
 </body>

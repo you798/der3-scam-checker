@@ -1987,17 +1987,33 @@
      fictional set. Every number is computed from actual outputs.
      ========================================================= */
   var Evaluation = window.Der3Evaluation;
-  var EVAL_KEY = 'der3-eval-set';
-  var evalState = { set: [], result: null, stale: false, editIdx: -1, ranAt: null, running: false };
+  // Two sets: "dev" (rules were tuned with these in view) and "holdout" (written after
+  // the rules were frozen; rules not changed after seeing the results).
+  var EVAL_SETS = {
+    dev: { key: 'der3-eval-set', data: function () { return window.Der3EvalSet || []; } },
+    holdout: { key: 'der3-eval-holdout', data: function () { return window.Der3EvalHoldout || []; } }
+  };
+  var EVAL_KEY = EVAL_SETS.dev.key;
+  var evalState = { which: 'dev', set: [], result: null, stale: false, editIdx: -1, ranAt: null, running: false };
 
-  function defaultEvalSet() { return JSON.parse(JSON.stringify(window.Der3EvalSet || [])); }
+  function defaultEvalSet() { return JSON.parse(JSON.stringify(EVAL_SETS[evalState.which].data())); }
   function loadEvalSet() {
     var saved = null;
+    EVAL_KEY = EVAL_SETS[evalState.which].key;
     try { saved = JSON.parse(storeGet('localStorage', EVAL_KEY) || 'null'); } catch (e) { saved = null; }
     evalState.set = Array.isArray(saved) && saved.length ? saved.map(Evaluation.sanitizeExample) : defaultEvalSet();
     evalState.custom = Array.isArray(saved) && saved.length > 0;
   }
   function saveEvalSet() { storeSet('localStorage', EVAL_KEY, JSON.stringify(evalState.set)); evalState.custom = true; }
+
+  function selectEvalSet(which) {
+    if (!EVAL_SETS[which] || evalState.running) return;
+    evalState.which = which;
+    evalState.result = null; evalState.stale = false; evalState.editIdx = -1;
+    loadEvalSet();
+    renderEval();
+    evalSay(t('evSwitched', { set: t('evSet_' + which), n: evalState.set.length }));
+  }
   function markEvalStale() { if (evalState.result) evalState.stale = true; }
   function detectLang(text) { return /[؀-ۿ]/.test(text) ? 'ar' : 'en'; }
   function evalSay(msg) { var s = $('#evStatus'); s.textContent = ''; setTimeout(function () { s.textContent = msg; }, 50); }
@@ -2073,7 +2089,8 @@
     ]);
     box.appendChild(el('div', { class: 'panel eval-matrix-card' }, [
       el('h3', { class: 'card-title', text: t('evMatrixTitle') }),
-      el('div', { class: 'eval-matrix-wrap' }, [table]),
+      // Scrolls sideways on small screens, so it must be reachable by keyboard.
+      el('div', { class: 'eval-matrix-wrap', tabindex: '0', role: 'region', 'aria-label': t('evMatrixTitle') }, [table]),
       el('p', { class: 'eval-legend' }, [
         el('span', { class: 'lg lg-correct', text: t('evLegendCorrect') }),
         el('span', { class: 'lg lg-mid', text: t('evLegendMid') }),
@@ -2167,6 +2184,9 @@
   }
 
   function renderEval() {
+    $$('.eval-set-btn').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-set') === evalState.which ? 'true' : 'false'); });
+    $('#evSetNote').textContent = t('evSetNote_' + evalState.which);
+    $('#evSetNote').className = 'eval-set-note set-' + evalState.which;
     renderEvalSummary();
     renderEvalList();
     $('#evReset').hidden = !evalState.custom;
@@ -2174,6 +2194,9 @@
 
   function initEval() {
     loadEvalSet();
+    $$('.eval-set-btn').forEach(function (b) {
+      b.addEventListener('click', function () { selectEvalSet(b.getAttribute('data-set')); });
+    });
     $('#evRun').addEventListener('click', runEvaluation);
     $('#evAdd').addEventListener('click', function () {
       evalState.set.push({ id: 'custom-' + Date.now().toString(36), type: 'message', lang: state.lang, expected: 'scam', text: '', _new: true });

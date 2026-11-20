@@ -476,6 +476,18 @@ test('evaluation: numbers come from the analyzer’s actual outputs', () => {
   assert.equal(r.counts.total, evalSet.length);
 });
 
+test('held-out set: separate from the development set, both labels, counts come from the analyzer', () => {
+  const holdout = require(path.join(__dirname, '..', 'public', 'js', 'eval-holdout.js'));
+  assert.ok(holdout.length >= 10);
+  const devTexts = new Set(evalSet.map((e) => e.text));
+  assert.ok(holdout.every((e) => !devTexts.has(e.text)), 'no example may appear in both sets');
+  for (const exp of ['scam', 'legit']) assert.ok(holdout.some((e) => e.expected === exp));
+  const r = evaluation.evaluate(holdout, engine.analyze);
+  const c = r.counts;
+  assert.equal(c.correct + c.falsePositive + c.falseNegative + c.caution + c.error, holdout.length);
+  // Deliberately NO assertion on the score: held-out results are reported as they are.
+});
+
 test('evaluation: outcome rules, including a fake analyzer to prove nothing is hard-coded', () => {
   assert.equal(evaluation.outcomeOf('scam', 'safe'), 'falseNegative');
   assert.equal(evaluation.outcomeOf('legit', 'scam'), 'falsePositive');

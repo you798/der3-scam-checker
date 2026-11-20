@@ -45,6 +45,25 @@ Then open http://localhost:3001
 
 **Offline fallback:** if you double-click `public/index.html` without the server, the page still works — it runs the same demo engine inside the browser and says "Offline mode". (Only "Check a screenshot" needs the server, because the OCR files are served from `node_modules`.)
 
+**No internet needed after `npm install`.** The fonts (IBM Plex Sans Arabic, Space Grotesk) are stored in `public/fonts` with their SIL Open Font License files, so the page looks the same offline, for example in a lecture hall without Wi-Fi.
+
+### Try it on a real phone (optional)
+
+Calling with `tel:`, the share menu, reading aloud and screenshot OCR behave differently on phones. To test them on your own phone:
+
+1. Connect the computer and the phone to the **same Wi-Fi** (home Wi-Fi, or your own phone's hotspot).
+2. Start the server in **phone mode**:
+   ```
+   npm run start:phone
+   ```
+   (`npm.cmd run start:phone` on Windows if PowerShell blocks `npm`.)
+3. The terminal prints one or more addresses like `http://192.168.1.20:3000`. Open one in the phone's browser.
+4. If Windows asks whether Node.js may use the network, allow it on **Private networks** only.
+
+Phone mode is **off by default** (`npm start` only accepts connections from this computer). Use it only on a network you trust, and stop it with <kbd>Ctrl</kbd> + <kbd>C</kbd> when done.
+
+Over plain `http://`, phone browsers turn off the share sheet, so Der3 automatically offers **Copy** instead. Calling, reading aloud, OCR and everything else work normally.
+
 ## Folder structure
 
 ```
@@ -70,7 +89,8 @@ der3/
         ├── read-aloud.js ← spoken summary text + voice choice for "Read result aloud" (browser AND tests)
         ├── screenshot.js ← screenshot rules: OCR quality, text clean-up, "unclear is never safe" (browser AND tests)
         ├── trust.js      ← Trust circle: contact validation, phone clean-up, privacy-safe alert text (browser AND tests)
-        ├── eval-set.js   ← the fictional, editable DEMO EVALUATION examples
+        ├── eval-set.js   ← the fictional, editable DEMO EVALUATION examples (development set)
+        ├── eval-holdout.js ← held-out examples, written after the rules were frozen
         ├── evaluation.js ← runs the analyzer on the demo set and counts the real outcomes (browser AND tests)
         └── app.js        ← interface logic (checker, results, recent checks, safety center, settings menu, help dialog)
 ```
@@ -177,6 +197,11 @@ A **Demo evaluation** section that runs the **real analyzer** (`engine.js`, the 
 - **Nothing is hard-coded.** `npm test` recomputes the counts from raw engine outputs and checks they match. It also checks that a fake "everything is safe" analyzer produces false negatives.
   - The numbers depend on the current rules. With engine v1.2, the set gave 11 correct and 4 needs caution. With engine v1.3 it gives 15 correct, 0 needs caution, 0 false positives and 0 false negatives. Change the examples or the rules and the numbers change.
   - **This is a small set the rules were tuned against, so it is not evidence of real-world accuracy.** "Needs caution" is still used for genuinely unclear input; `npm test` checks that several uncertain inputs stay "Needs caution".
+- **Held-out set** (`public/js/eval-holdout.js`, switch **Development set / Held-out set** on the page): 12 new fictional examples written **after** engine v1.3 was frozen. The rules were **not** changed after seeing these results.
+  - With v1.3 it gives **7 correct, 4 needs caution, 0 false positives and 1 false negative**.
+  - The miss is a fake "Windows technical support" call that never mentions an app or remote access. Other misses (rated only "Needs caution"): an Egyptian electricity-company call demanding payment by Vodafone Cash ("لو مدفعتش"), a tax-refund link, and a login alert with a lookalike link. One legitimate family message ("the kids loved the presents… we will visit") was also rated "Needs caution" because family wording looks like a family-emergency scam.
+  - These show real limits of a pattern-based demo. Present them honestly.
+  - The same developer wrote these examples, so they may share blind spots with the rules. For the strongest test, ask someone who hasn't seen the rules to add examples on the page and run it live.
   - Each example also shows "Identity not verified" when it names an organization. That flag is not part of the score.
 - **Disclaimer (shown on the page):** these numbers describe only this small, hand-picked demo set. They are **not** real-world accuracy.
 
@@ -253,6 +278,32 @@ When a result is **Likely scam** or **Needs caution** in the checker, or **High 
 - Audio recordings stay in the browser (they are never uploaded).
 - The optional **Dictate** button uses the browser's own speech recognition. Some browsers (for example Chrome) send that audio to their own servers to turn it into text — the page says this next to the button. It only starts when the user presses it.
 - The page loads the *IBM Plex Sans Arabic* and *Space Grotesk* fonts from Google Fonts. No user data is included. Without internet, it falls back to system fonts.
+
+## Accessibility check
+
+The page was checked with the open-source **axe-core 4.10.3** checker against **WCAG 2.1 A/AA**. It was run in English and Arabic, at desktop and phone width, with a high-risk result, the verification guide, the safety pause, the share confirmation, the evaluation results, the screenshot tab, the on-call screen and the help window open. It reports **no violations**.
+
+Two issues it found were fixed:
+- the header help button had no accessible name on small screens;
+- the scrolling confusion matrix couldn't be reached by keyboard.
+
+Automated checks catch only part of the possible problems. The site has **not** been tested with a real screen reader (NVDA, TalkBack, VoiceOver) or with the "reduce motion" setting switched on, so try those before relying on them.
+
+## Backups (git)
+
+The `der3` folder is a git repository, so you can see what changed and go back if something breaks:
+```
+git log --oneline          # list saved versions
+git status                 # see unsaved changes
+git add -A
+git commit -m "describe the change"
+```
+Commits currently use the placeholder name "Der3 Team". To use your own name for this project:
+```
+git config user.name "Your Name"
+git config user.email "you@example.com"
+```
+Nothing is uploaded anywhere unless you add a remote (for example GitHub) and push.
 
 ## Changing things
 

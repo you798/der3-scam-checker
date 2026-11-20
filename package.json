@@ -6,6 +6,7 @@
   "private": true,
   "scripts": {
     "start": "node server.js",
+    "start:phone": "node server.js --lan",
     "dev": "node --watch server.js",
     "test": "node --test test/"
   },

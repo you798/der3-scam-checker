@@ -15,7 +15,11 @@ const numberList = require('./public/js/verified-numbers.js');
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
-const HOST = '127.0.0.1'; // only reachable from this computer
+// Default: only reachable from this computer.
+// Phone mode (opt-in, "npm run start:phone"): reachable from devices on the SAME Wi-Fi,
+// so the demo can be tried on a real phone. Use it only on a network you trust.
+const LAN = process.argv.includes('--lan');
+const HOST = LAN ? '0.0.0.0' : '127.0.0.1';
 
 app.disable('x-powered-by');
 
@@ -103,10 +107,34 @@ app.use((err, req, res, next) => {
   res.status(500).json({ ok: false, error: 'server' });
 });
 
+function lanAddresses() {
+  const out = [];
+  const nets = require('os').networkInterfaces();
+  Object.keys(nets).forEach((name) => {
+    (nets[name] || []).forEach((n) => {
+      const v4 = n.family === 'IPv4' || n.family === 4;
+      if (v4 && !n.internal && !/^169\.254\./.test(n.address)) out.push(n.address);
+    });
+  });
+  return out;
+}
+
 const server = app.listen(PORT, HOST, () => {
   console.log('');
   console.log('  Der3 | درع demo is running.');
   console.log(`  Open this address in your browser:  http://localhost:${PORT}`);
+  if (LAN) {
+    const ips = lanAddresses();
+    console.log('');
+    console.log('  PHONE MODE — reachable from devices on the same Wi-Fi network:');
+    if (ips.length) ips.forEach((ip) => console.log(`    http://${ip}:${PORT}`));
+    else console.log('    (no Wi-Fi/LAN address found — is this computer connected to a network?)');
+    console.log('  وضع الموبايل — افتح أحد العناوين أعلاه من موبايل متصل بنفس شبكة الـ Wi-Fi.');
+    console.log('');
+    console.log('  Use this only on a network you trust (home / your own hotspot), and stop it when done.');
+    console.log('  If Windows asks, allow Node.js on PRIVATE networks only.');
+    console.log('  Note: over plain http:// phones disable the share sheet; Der3 offers "Copy" instead.');
+  }
   console.log('  Press Ctrl + C in this terminal to stop it.');
   console.log('');
 });
