@@ -279,6 +279,17 @@ When a result is **Likely scam** or **Needs caution** in the checker, or **High 
 - The optional **Dictate** button uses the browser's own speech recognition. Some browsers (for example Chrome) send that audio to their own servers to turn it into text — the page says this next to the button. It only starts when the user presses it.
 - The page loads the *IBM Plex Sans Arabic* and *Space Grotesk* fonts from Google Fonts. No user data is included. Without internet, it falls back to system fonts.
 
+## Online version (GitHub + Vercel)
+
+The hosted site is **static**: Vercel serves only the `public/` folder.
+- The analyzer, the caller-number check, the screenshot OCR, Recent checks, and the Trust circle all run **in the visitor's browser**. Nothing anyone types or uploads is sent to Vercel or anywhere else.
+- **How the page decides:** it uses a server only after `GET /api/health` confirms the local Der3 demo server. Online there is no such server, so every check runs in the browser. The status line then reads "In-browser engine · nothing leaves this device".
+- **The build:** `npm run build` (`scripts/build-static.js`) copies the OCR library, its WebAssembly core and the Arabic/English language data from `node_modules` into `public/vendor/`. Vercel runs it automatically, and the folder is not committed.
+- **Vercel settings:** `vercel.json` sets the build command, the output folder (`public`) and the security headers. `.vercelignore` keeps `server.js` out of the upload, so it can never become a server function.
+- **Automatic updates:** after you connect the GitHub repository to Vercel once, every `git push` redeploys the site.
+
+To check the static build locally: `npm run build`, then serve the `public` folder with any static file server.
+
 ## Accessibility check
 
 The page was checked with the open-source **axe-core 4.10.3** checker against **WCAG 2.1 A/AA**. It was run in English and Arabic, at desktop and phone width, with a high-risk result, the verification guide, the safety pause, the share confirmation, the evaluation results, the screenshot tab, the on-call screen and the help window open. It reports **no violations**.

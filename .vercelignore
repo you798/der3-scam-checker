@@ -1,0 +1,4 @@
+# The hosted site is STATIC (public/ only). Keep the local Express server out of the
+# deployment so Vercel never turns it into a server function that would receive user text.
+server.js
+test/

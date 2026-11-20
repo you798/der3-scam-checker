@@ -213,8 +213,11 @@
 
   function checkServer() {
     if (!state.canUseServer) { state.serverOnline = false; renderServerStatus(); return; }
+    // Use a server ONLY after it proves it is the local Der3 demo server.
+    // On a static host (e.g. Vercel) there is none, so user text never leaves the browser.
     fetchWithTimeout('/api/health', { method: 'GET' }, 4000)
-      .then(function (r) { state.serverOnline = r.ok; })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (b) { state.serverOnline = !!(b && b.ok && b.simulated === true && /Der3/.test(String(b.engine || ''))); })
       .catch(function () { state.serverOnline = false; })
       .then(renderServerStatus);
   }
@@ -330,15 +333,15 @@
     // Screenshot text is checked with the normal MESSAGE rules (incl. visible links).
     var engineType = type === 'screenshot' ? 'message' : type;
 
-    if (state.canUseServer) {
+    // Only a CONFIRMED local Der3 server gets the text (see checkServer); otherwise the
+    // same engine runs in this browser and nothing is sent anywhere.
+    if (state.serverOnline) {
       request = fetchWithTimeout('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type: engineType, input: input })
       }, 8000).then(function (r) {
         return r.json().then(function (body) {
-          state.serverOnline = true;
-          renderServerStatus();
           if (body && (body.ok || body.error)) return { result: body, source: 'server' };
           throw new Error('bad response');
         });
@@ -885,7 +888,7 @@
     $('#callerBtn').disabled = true;
 
     function local() { return window.Der3NumberCheck.checkNumber(value, window.Der3VerifiedNumbers); }
-    var req = state.canUseServer
+    var req = state.serverOnline // confirmed local Der3 server only
       ? fetchWithTimeout('/api/number-check', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ number: value })
@@ -1099,7 +1102,7 @@
     $('#helpError').hidden = true;
     setHelpSending(true);
     // Only the contact *type* goes to the local server — never the name or any checked text.
-    var req = state.canUseServer
+    var req = state.serverOnline // confirmed local Der3 server only
       ? fetchWithTimeout('/api/help-request', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ contactType: who })
